@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+  <meta charset="UTF-8" />
+  <title>Register - AI Image Predictor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* Your existing CSS here */
+    :root {
+      --primary: #4f46e5;
+      --accent: #22c55e;
+      --bg-light: linear-gradient(135deg, #e0e7ff, #fce7f3);
+      --bg-dark: linear-gradient(135deg, #0f172a, #1e293b);
+      --text-dark: #f8fafc;
+      --text-light: #1e293b;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-dark);
+      transition: background 0.5s, color 0.5s;
+    }
+
+    body.light-mode {
+      background: var(--bg-light);
+      color: var(--text-light);
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background-color: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 1.7rem;
+      font-weight: bold;
+      margin-left: 40px;
+    }
+
+    .logo img {
+      height: 60px;
+      margin-right: 12px;
+    }
+
+    .nav-toggle {
+      display: none;
+      font-size: 1.5rem;
+      background: none;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links li {
+      margin-left: 20px;
+    }
+
+    .nav-links a {
+      color: inherit;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      border-radius: 24px;
+      transition: 0.4s;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      border-radius: 50%;
+      transition: 0.4s;
+    }
+
+    input:checked + .slider {
+      background-color: var(--accent);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+
+    @media (max-width: 765px) {
+      .nav-toggle {
+        display: block;
+      }
+
+      .nav-links {
+        flex-direction: column;
+        width: 100%;
+        display: none;
+      }
+
+      .nav-links.show {
+        display: flex;
+      }
+
+      .nav-links li {
+        margin: 10px 0;
+      }
+    }
+
+    .form-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding-top: 100px;
+      padding-bottom: 80px;
+      padding-left: 15px;
+      padding-right: 15px;
+      box-sizing: border-box;
+    }
+
+    .form-container {
+      background: linear-gradient(135deg, #74ebd5, #acb6e5);
+      color: #1f1f1f;
+      padding: clamp(20px, 3vw, 40px);
+      border-radius: clamp(10px, 2vw, 15px);
+      width: clamp(280px, 80vw, 450px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
+
+    .form-container h2 {
+      text-align: center;
+      margin-bottom: clamp(15px, 2vw, 25px);
+      font-size: clamp(1.3rem, 3vw, 1.8rem);
+    }
+
+    .form-container input {
+      width: 100%;
+      padding: clamp(8px, 1.5vw, 12px);
+      margin-bottom: clamp(10px, 2vw, 15px);
+      border-radius: clamp(5px, 1.5vw, 8px);
+      border: 1px solid #ccc;
+      font-size: clamp(0.9rem, 2vw, 1rem);
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
+
+    .form-container button {
+      width: 100%;
+      padding: clamp(10px, 2vw, 12px);
+      background-color: #0f2027;
+      color: #fff;
+      font-weight: 600;
+      border: none;
+      border-radius: clamp(5px, 1.5vw, 8px);
+      cursor: pointer;
+      transition: background 0.3s;
+      font-size: clamp(1rem, 3vw, 1.1rem);
+    }
+
+    .form-container button:hover {
+      background-color: #203a43;
+    }
+
+    .form-container p {
+      text-align: center;
+      margin-top: clamp(10px, 2vw, 15px);
+      font-size: clamp(0.9rem, 2vw, 1rem);
+    }
+
+    .form-container a {
+      color: #0f2027;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    .form-container a:hover {
+      color: #203a43;
+    }
+
+    /* New styles for error message */
+    .error-message {
+      background-color: #f44336;
+      color: white;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    footer {
+      background-color: rgba(0, 0, 0, 0.85);
+      padding: 1rem 2rem;
+      text-align: center;
+      color: #ccc;
+      font-size: 0.9rem;
+      position: relative;
+      bottom: 0;
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body class="dark-mode">
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">
+      <img src="{% static 'myapp/mainlogo.png' %}" alt="Logo" />
+      <span>AI Image Predictor</span>
+    </div>
+
+    <button class="nav-toggle" onclick="toggleNavbar()">☰</button>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="{% url 'home' %}">Home</a></li>
+      <li><a href="{% url 'register' %}">Register</a></li>
+      <li><a href="{% url 'login' %}">Login</a></li>
+      <li>
+        <label class="toggle-switch">
+          <input type="checkbox" id="modeToggle" onchange="toggleTheme()" /> 
+          <span class="slider"></span>
+        </label>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Register Form -->
+  <div class="form-wrapper">
+    <div class="form-container">
+      <h2>Create Your Account</h2>
+
+      <!-- Error display -->
+      {% if error %}
+      <div class="error-message">{{ error }}</div>
+      {% endif %}
+
+      <form method="POST" onsubmit="return validateRegister()">
+        {% csrf_token %}
+        <input
+          type="text"
+          name="username"
+          placeholder="Username"
+          value="{{ request.POST.username }}"
+          required
+        />
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value="{{ request.POST.email }}"
+          required
+        />
+        <input
+          type="password"
+          name="password"
+          id="password"
+          placeholder="Password"
+          required
+        />
+        <input
+          type="password"
+          name="confirm"
+          id="confirm"
+          placeholder="Confirm Password"
+          required
+        />
+        <button type="submit">Register</button>
+      </form>
+      <p>
+        Already have an account? <a href="{% url 'login' %}">Login here</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 AI Image Predictor | Built with Django & Keras | For Educational Use Only
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+  function toggleNavbar() {
+    const navLinks = document.getElementById("navLinks");
+    navLinks.classList.toggle("show");
+  }
+
+  function validateRegister() {
+    const password = document.getElementById("password").value;
+    const confirm = document.getElementById("confirm").value;
+    if (password !== confirm) {
+      alert("Passwords do not match.");
+      return false;
+    }
+    return true;
+  }
+
+  // Theme toggle function
+  function toggleTheme() {
+    const body = document.body;
+    const modeToggle = document.getElementById("modeToggle");
+    if (modeToggle.checked) {
+      body.classList.add("light-mode");
+      localStorage.setItem("theme", "light");
+    } else {
+      body.classList.remove("light-mode");
+      localStorage.setItem("theme", "dark");
+    }
+  }
+
+  // Initialize theme based on saved preference or default to dark
+  window.addEventListener("DOMContentLoaded", () => {
+    const savedTheme = localStorage.getItem("theme") || "dark";
+    const body = document.body;
+    const modeToggle = document.getElementById("modeToggle");
+
+    if (savedTheme === "light") {
+      body.classList.add("light-mode");
+      modeToggle.checked = true;
+    } else {
+      body.classList.remove("light-mode");
+      modeToggle.checked = false;
+    }
+  });
+</script>
+
+</body>
+</html>

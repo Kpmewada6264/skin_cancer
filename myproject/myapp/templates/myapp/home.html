@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Image Predictor</title>
+
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --accent: #22c55e;
+      --bg-light: linear-gradient(135deg, #e0e7ff, #fce7f3);
+      --bg-dark: linear-gradient(135deg, #0f172a, #1e293b);
+      --text-dark: #f8fafc;
+      --text-light: #1e293b;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-dark);
+      transition: background 0.5s, color 0.5s;
+    }
+
+    body.light-mode {
+      background: var(--bg-light);
+      color: var(--text-light);
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background-color: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 1.7rem;
+      font-weight: bold;
+      margin-left: 40px;
+    }
+
+    .logo img {
+      height: 60px;
+      margin-right: 12px;
+    }
+
+    .nav-toggle {
+      display: none;
+      font-size: 1.5rem;
+      background: none;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links li {
+      margin-left: 20px;
+    }
+
+    .nav-links a {
+      color: inherit;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      border-radius: 24px;
+      transition: 0.4s;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      border-radius: 50%;
+      transition: 0.4s;
+    }
+
+    input:checked + .slider {
+      background-color: var(--accent);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+
+    .hero {
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      max-width: 600px;
+      margin-inline: auto;
+    }
+
+    .btn {
+      padding: 12px 26px;
+      margin: 10px;
+      background-color: var(--accent);
+      color: #000;
+      border: none;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: bold;
+      text-decoration: none;
+      box-shadow: 0 5px 15px rgba(34, 197, 94, 0.4);
+      transition: all 0.3s ease-in-out;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #16a34a;
+      transform: translateY(-3px);
+    }
+
+    /* About section */
+    .about {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4rem 2rem;
+      flex-wrap: wrap;
+    }
+
+    .about img {
+      flex: 1;
+      width: 100%;
+      max-width: 400px;
+      border-radius: 20px;
+      margin-left: 100px;
+      margin-top:-200px;
+
+    }
+
+   .about-text {
+  flex: 1;
+  min-width: 300px;
+  max-width: 700px;
+  padding-right: 50px; 
+}
+
+    .about-text h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .about-text p {
+      font-size: 1.1rem;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 765px) 
+    {
+
+      .nav-toggle {
+        display: block;
+      }
+
+      .nav-links {
+        flex-direction: column;
+        width: 100%;
+        display: none;
+      }
+
+      .nav-links.show {
+        display: flex;
+      }
+
+      .nav-links li {
+        margin: 10px 0;
+      }
+
+      .about {
+        flex-direction: column;
+        text-align: center;
+        
+      }
+      .about div{
+      flex: 1;
+      min-width: 200px;
+      max-width: 500px;
+      }
+
+    .about-text {
+    padding: 0; /* Remove right padding */
+    }
+
+
+      .about img {
+        margin: 0 0 2rem 0;
+
+       
+      }
+    }
+
+    .footer {
+      background-color: rgba(0, 0, 0, 0.1);
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">
+      <img src="{% static 'myapp/mainlogo.png' %}" alt="Logo" />
+      AI Predictor
+    </div>
+    
+    <button class="nav-toggle" onclick="toggleNavbar()">☰</button>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="{% url 'home' %}">Home</a></li>
+      <li><a href="{% url 'register' %}">Register</a></li>
+      <li><a href="{% url 'login' %}">Login</a></li>
+      <li>
+        <label class="toggle-switch">
+          <input type="checkbox" id="modeToggle" onchange="toggleTheme()" />
+          <span class="slider"></span>
+        </label>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero" id="home">
+    <h1>Welcome to AI Image Predictor</h1>
+    <p>Detect skin conditions instantly with the power of deep learning and computer vision. Upload your image to begin.</p>
+    <a href="{% url 'register' %}" class="btn">Get Started</a>
+    <a href="{% url 'login' %}" class="btn">Login</a>
+  </section>
+
+  <!-- About Section -->
+  <section class="about" id="about">
+    <img src="{% static 'myapp/doc.png' %}" alt="AI Prediction" />
+    <div class="about-text">
+      <h2>About the Project</h2>
+      <p>
+        Our AI Image Predictor is built with Keras and Django to analyze skin images and provide condition insights.
+        It uses a trained deep learning model to assist users in identifying potential concerns. This tool is for educational purposes and should not replace medical advice.
+      </p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    &copy; 2025 AI Image Predictor • Made with ❤️ and Python
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    function toggleTheme() {
+      document.body.classList.toggle('light-mode');
+    }
+
+    function toggleNavbar() {
+      const nav = document.getElementById("navLinks");
+      nav.classList.toggle("show");
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  </script>
+</body>
+</html>
